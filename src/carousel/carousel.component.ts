@@ -27,16 +27,16 @@ export enum Direction {UNKNOWN, NEXT, PREV}
 @Component({
   selector: 'carousel',
   template: `
-    <div (mouseenter)="pause()" (mouseleave)="play()" (mouseup)="play()" class="carousel slide">
+    <div (mouseenter)="pause()" (mouseleave)="play()" (mouseup)="play()" class="carousel slide" [class]="{'slide-left':slideLeft, 'slide-right':slideRight}">
       <ol class="carousel-indicators" *ngIf="slides.length > 1">
          <li *ngFor="let slidez of slides; let i = index;" [class.active]="slidez.active === true" (click)="selectSlide(i)"></li>
       </ol>
       <div class="carousel-inner"><ng-content></ng-content></div>
-      <a class="left carousel-control carousel-control-prev" [class.disabled]="activeSlide === 0 && noWrap" (click)="previousSlide()" *ngIf="slides.length > 1">
+      <a class="left carousel-control carousel-control-prev" [class.disabled]="activeSlide === 0 && noWrap" (click)="previousSlide(); slideLeft = true; slideRight = false" *ngIf="slides.length > 1">
         <span class="icon-prev carousel-control-prev-icon" aria-hidden="true"></span>
         <span *ngIf="isBs4" class="sr-only">Previous</span>
       </a>
-      <a class="right carousel-control carousel-control-next" (click)="nextSlide()"  [class.disabled]="isLast(activeSlide) && noWrap" *ngIf="slides.length > 1">
+      <a class="right carousel-control carousel-control-next" (click)="nextSlide(); slideRight = true; slideLeft = false"  [class.disabled]="isLast(activeSlide) && noWrap" *ngIf="slides.length > 1">
         <span class="icon-next carousel-control-next-icon" aria-hidden="true"></span>
         <span class="sr-only">Next</span>
       </a>
@@ -87,6 +87,8 @@ export class CarouselComponent implements OnDestroy {
   protected currentInterval: any;
   protected isPlaying: boolean;
   protected destroyed: boolean = false;
+  protected slideLeft: boolean = false;
+  protected slideRight: boolean = false;
 
   public get isBs4():boolean {
     return !isBs3();
